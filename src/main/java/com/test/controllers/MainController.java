@@ -2,15 +2,19 @@ package com.test.controllers;
 
 import com.test.models.User;
 
+import com.test.repositories.RoboResumeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
@@ -19,6 +23,8 @@ import java.time.temporal.ChronoUnit;
 public class MainController {
 
 
+    @Autowired
+    RoboResumeRepository roboResumeRepository;
 
 
     @GetMapping("/")
@@ -56,9 +62,28 @@ public class MainController {
 
         user.setEmployedDays(ChronoUnit.DAYS.between(LocalDate.parse(user.getStartDate()), LocalDate.parse(user.getEndDate())));
 
-     //   roboResumeRepository.save(user);
+        roboResumeRepository.save(user);
         return "resultuser";
     }
 
+
+    @GetMapping("/displayallusers")
+    public String showAllUsers(Model model)
+    {
+        Iterable <User> usersList = roboResumeRepository.findAll();
+        model.addAttribute("users" , usersList);
+        //return usersList.toString();
+        return "displayallusers";
+    }
+
+
+//    @GetMapping("/displayallusers")
+//    public String list(Model model)
+//    {
+//       // Iterable <User> usersList = roboResumeRepository.findAll();
+//        model.addAttribute("users" , userService.listAllProductd();
+//        //return usersList.toString();
+//        return "displayallusers";
+//    }
 
 }
